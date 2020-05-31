@@ -4,8 +4,8 @@ const mongodb = require("mongodb")
 const MongoClient = mongodb.MongoClient;
 const LIMIT = 4;
 const client = new MongoClient(
-  //"mongodb://localhost:27017/team-up",
-  "mongodb+srv://rajat:rajat@cluster0-he3og.mongodb.net",
+  "mongodb://localhost:27017/",
+  //"mongodb+srv://rajat:rajat@cluster0-he3og.mongodb.net",
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -38,7 +38,7 @@ client.connect((err) => {
         });
     })
     .post(async (req, res) => {
-      console.log(req.body)
+      users.insertOne(req.body, () => res.send("User Added"));
       // users
       //   .find(req.body)
       //   .toArray((err, fetched_users) => {
@@ -52,7 +52,14 @@ client.connect((err) => {
       //   });
     })
     .put(async (req, res) => {
-      console.log(req.body)
+      const { _id, phone, email, name } = req.body
+      users.updateOne({ _id: new mongodb.ObjectId(_id) }, {
+        $set: { email, name, phone }
+      }, (err) => {
+        if (err) { console.log(err); res.send({ err: "Error in updating" }); return; }
+        res.send("User Updated")
+      })
+
     })
     .delete(async (req, res) => {
       users.deleteOne({ _id: new mongodb.ObjectId(req.query._id) }, (err) => {
