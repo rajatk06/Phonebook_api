@@ -38,18 +38,15 @@ client.connect((err) => {
         });
     })
     .post(async (req, res) => {
-      users.insertOne(req.body, () => res.send("User Added"));
-      // users
-      //   .find(req.body)
-      //   .toArray((err, fetched_users) => {
-      //     if (err) {
-      //       console.log(err);
-      //       res.send({ err: "GET error" });
-      //       return;
-      //     }
-      //     if (fetched_users.length > 0) res.send({ err: "User already exists" });
-      //     else users.insertOne(req.body, () => res.send("User Added"));
-      //   });
+      users.insertOne(req.body, (err) => {
+        if (err) {
+          console.log(err);
+          res.send({ err: "Error in updating" });
+          return;
+        }
+
+        res.send("User Added")
+      });
     })
     .put(async (req, res) => {
       const { _id, phone, email, name } = req.body
