@@ -22,7 +22,7 @@ client.connect((err) => {
     .get(async (req, res) => {
       const page = req.query.page ? req.query.page : 0;
       const value = req.query.value
-      // console.log(page)
+      //console.log(page)
       users
         .find(value ? { $text: { $search: value, $caseSensitive: false } } : {})
         .sort({ name: 1 })
@@ -38,17 +38,21 @@ client.connect((err) => {
         });
     })
     .post(async (req, res) => {
-      users
-        .find(req.body)
-        .toArray((err, fetched_users) => {
-          if (err) {
-            console.log(err);
-            res.send({ err: "GET error" });
-            return;
-          }
-          if (fetched_users.length > 0) res.send({ err: "User already exists" });
-          else users.insertOne(req.body, () => res.send("User Added"));
-        });
+      console.log(req.body)
+      // users
+      //   .find(req.body)
+      //   .toArray((err, fetched_users) => {
+      //     if (err) {
+      //       console.log(err);
+      //       res.send({ err: "GET error" });
+      //       return;
+      //     }
+      //     if (fetched_users.length > 0) res.send({ err: "User already exists" });
+      //     else users.insertOne(req.body, () => res.send("User Added"));
+      //   });
+    })
+    .put(async (req, res) => {
+      console.log(req.body)
     })
     .delete(async (req, res) => {
       users.deleteOne({ _id: new mongodb.ObjectId(req.query._id) }, (err) => {
