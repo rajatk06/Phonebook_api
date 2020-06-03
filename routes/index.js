@@ -74,7 +74,7 @@ client.connect((err) => {
           res.send({ err: "Unable to find" });
           return;
         }
-        if (fetched_users.length) res.send({ err: "already exists" })
+        if (fetched_users.length) res.send({ err: `${field} already exists` })
         else res.send("ok")
       })
     })
