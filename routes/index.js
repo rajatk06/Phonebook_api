@@ -21,10 +21,17 @@ client.connect((err) => {
   router
     .route("/users")
     .get(async ({ query }, res) => {
-      const { page = 0, value } = query;
+      const { page = 0, val, opr } = query;
       //console.log(page);
       users.find(
-        value ? { $text: { $search: value, $caseSensitive: false } } : {},
+        val
+          ? {
+              [opr]: {
+                $regex: opr === "name" ? val : `\\b${val}\\b`,
+                $options: "$gi"
+              }
+            }
+          : {},
         (e, fetched_users) => {
           fetched_users.count((err, n) => {
             if (err) {
@@ -86,9 +93,9 @@ client.connect((err) => {
     });
 
   router.route("/validate").post(async (req, res) => {
-    const { field, value } = req.body;
+    const { field, val } = req.body;
     users
-      .aggregate([{ $unwind: `$${field}` }, { $match: { [field]: value } }])
+      .aggregate([{ $unwind: `$${field}` }, { $match: { [field]: val } }])
       .toArray((err, fetched_users) => {
         if (err) {
           res.send({ err: "Unable to find" });
